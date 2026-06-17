@@ -54,7 +54,7 @@
             <i class="bi bi-house"></i> Dashboard
         </a>
         <a href="{{ route('mahasiswa.barang') }}" class="{{ request()->is('mahasiswa/barang') ? 'active' : '' }}">
-            <i class="bi bi-archive"></i> Pinjam Barang
+            <i class="bi bi-archive"></i> Pinjam Alat
         </a>
         <a href="{{ route('mahasiswa.riwayat') }}" class="{{ request()->is('mahasiswa/riwayat') ? 'active' : '' }}">
             <i class="bi bi-clock-history"></i> Riwayat

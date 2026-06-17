@@ -10,7 +10,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::where('stok', '>')->get();
+        $barangs = Barang::where('stok_tersedia', '>', 0)->get();
         return view('barang.index', compact('barangs'));
     }
 
@@ -23,6 +23,7 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kode'             => 'nullable|string|unique:barang,kode',
             'nama'             => 'required|string',
             'deskripsi'        => 'nullable|string',
             'stok_total'       => 'required|integer|min:0',
@@ -32,6 +33,7 @@ class BarangController extends Controller
         ]);
 
         Barang::create([
+            'kode'              => $request->kode,
             'nama'              => $request->nama,
             'deskripsi'         => $request->deskripsi,
             'stok_total'        => $request->stok_total,
@@ -58,6 +60,7 @@ class BarangController extends Controller
     public function update(Request $request, Barang $barang)
     {
         $request->validate([
+            'kode'              => 'nullable|string|unique:barang,kode,'.$barang->id,
             'nama'              => 'required|string',
             'stok_total'        => 'required|integer|min:0',
             'stok_tersedia'     => 'required|integer|min:0',
@@ -65,6 +68,7 @@ class BarangController extends Controller
         ]);
 
         $barang->update([
+            'kode'              => $request->kode,  
             'nama'              => $request->nama,
             'deskripsi'         => $request->deskripsi,
             'stok_total'        => $request->stok_total,

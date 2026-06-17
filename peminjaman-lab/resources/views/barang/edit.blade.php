@@ -5,6 +5,11 @@
 <form action="{{ route('barang.update', $barang->id) }}" method="POST">
     @csrf @method('PUT')
     <div class="mb-3">
+    <label>Kode Barang</label>
+    <input type="text" name="kode" class="form-control"
+        value="{{ $barang->kode ?? '' }}" placeholder="cth: KB001">
+</div>
+    <div class="mb-3">
         <label>Nama Barang</label>
         <input type="text" name="nama" class="form-control" value="{{ $barang->nama }}" required>
     </div>

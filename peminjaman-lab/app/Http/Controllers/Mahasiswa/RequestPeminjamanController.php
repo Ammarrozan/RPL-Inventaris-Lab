@@ -31,7 +31,7 @@ class RequestPeminjamanController extends Controller
     $peminjam = Peminjam::firstOrCreate(
         [
             'id_user'             => $user->id,
-            'nim'                 => $user->nim ?? '-',
+            'nim'                 => $user->nim,
             'nama'                => $user->name,
             'no_hp'               => $user->no_hp ?? '-',
             'id_barang'           => $request->id_barang,

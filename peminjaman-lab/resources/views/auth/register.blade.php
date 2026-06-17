@@ -180,6 +180,15 @@
                     <input type="text" name="name" class="form-control" placeholder="Nama lengkap" value="{{ old('name') }}" required>
                 </div>
             </div>
+
+            <div class="mb-2">
+                <label class="form-label">NIM</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                    <input type="text" name="nim" class="form-control" placeholder="Nomor Induk Mahasiswa" value="{{ old('nim') }}" required>
+                </div>
+            </div>
+
             <div class="mb-2">
                 <label class="form-label">Email</label>
                 <div class="input-group">

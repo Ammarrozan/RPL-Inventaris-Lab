@@ -9,9 +9,39 @@ use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transaksis = Transaksi::with(['peminjam', 'status'])->get();
+        // 1. Buat query dasar beserta seluruh relasinya
+        $query = Transaksi::with(['peminjam.user', 'peminjam.barang', 'status']);
+
+        // 2. TANGKAP PARAMETER DARI URL (?status=... & cari=...)
+        $statusUrl = $request->query('status');
+        $cariUrl = $request->query('cari');
+
+        // 3. Logika Filter Berdasarkan Status (Yang sudah aman sebelumnya)
+        if ($statusUrl && $statusUrl != 'semua') {
+            $query->whereHas('status', function($q) use ($statusUrl) {
+                if ($statusUrl == 'pending') {
+                    $q->where('nama', 'Menunggu Approval');
+                } elseif ($statusUrl == 'dipinjam') {
+                    $q->where('nama', 'Dipinjam');
+                } elseif ($statusUrl == 'selesai') {
+                    $q->where('nama', 'Selesai');
+                }
+            });
+        }
+
+        // 4. LOGIKA TAMBAHAN: Filter Pencarian Nama Peminjam
+        if ($cariUrl) {
+            $query->whereHas('peminjam', function($q) use ($cariUrl) {
+                // Mencari nama yang mirip/mengandung kata kunci yang diketik user
+                $q->where('nama', 'like', '%' . $cariUrl . '%');
+            });
+        }
+
+        // 5. Eksekusi query final dan kirim hasilnya ke View
+        $transaksis = $query->get();
+
         return view('transaksi.index', compact('transaksis'));
     }
 

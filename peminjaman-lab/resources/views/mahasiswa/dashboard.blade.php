@@ -59,8 +59,8 @@
             <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
                 <div style="background: #e8f0fe; border-radius: 12px; padding: 14px; font-size: 28px;">🔭</div>
                 <div>
-                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Pinjam Barang</div>
-                    <div style="font-size: 13px; color: #6c757d; margin-top: 2px;">Lihat dan request barang tersedia</div>
+                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Mulai Pinjam Alat</div>
+                    <div style="font-size: 13px; color: #6c757d; margin-top: 2px;">Lihat dan request Alat tersedia</div>
                 </div>
                 <div style="margin-left: auto; color: #0d6efd; font-size: 20px;">→</div>
             </div>
@@ -71,7 +71,7 @@
             <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
                 <div style="background: #e8f0fe; border-radius: 12px; padding: 14px; font-size: 28px;">📋</div>
                 <div>
-                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Riwayat Peminjaman</div>
+                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Cek Status Peminjaman</div>
                     <div style="font-size: 13px; color: #6c757d; margin-top: 2px;">Lihat status peminjaman kamu</div>
                 </div>
                 <div style="margin-left: auto; color: #0d6efd; font-size: 20px;">→</div>

@@ -477,6 +477,16 @@
             <input type="hidden" name="id_barang" id="inputIdBarang">
 
             <div class="form-group">
+                <label class="form-label" for="nim">NIM</label>
+                <input type="text" name="nim" id="nim"
+                    class="form-input" placeholder="Masukkan NIM kamu"
+                    value="{{ auth()->user()->nim ?? old('nim') }}" required>
+                @error('nim')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="form-group">
                 <label class="form-label" for="tanggal_dipinjam">Tanggal Pinjam</label>
                 <input type="date" name="tanggal_dipinjam" id="tanggal_dipinjam"
                     class="form-input" min="{{ date('Y-m-d') }}" required>
