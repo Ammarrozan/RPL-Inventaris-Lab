@@ -238,7 +238,7 @@
     <header class="topbar">
         <div class="topbar-left"><div class="tb-dot"></div> System Online</div>
         <div class="topbar-right">
-            
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
@@ -267,37 +267,71 @@
 <div id="page-transition-overlay"></div>
 
 <style>
+    <div id="page-transition-overlay"></div>
+
+<style>
+    /* --- OPTIMASI RENDER GLOBAL (BIAR GPU IKUT KERJA) --- */
+    .card, .btn, .form-control, .form-select, table, tr, aside {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        will-change: transform, opacity;
+    }
+
+    /* Efek transisi halus untuk interaksi tombol & filter */
+    .btn, .form-select, .form-control, .nav-item {
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    /* --- ANIMASI TRANSISI HALUS OVERLAY --- */
     #page-transition-overlay {
         position: fixed; inset: 0; background: #1A1A1A; z-index: 9999;
         transform: translateY(100%); pointer-events: none;
     }
-    #page-transition-overlay.enter { animation: slideUpReveal 0.5s cubic-bezier(.65,0,.35,1) forwards; }
-    #page-transition-overlay.leave { animation: slideUpCover 0.4s cubic-bezier(.65,0,.35,1) forwards; pointer-events: all; }
+
+    /* Gunakan cubic-bezier premium ala iOS/Apple */
+    #page-transition-overlay.enter {
+        animation: slideUpReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    #page-transition-overlay.leave {
+        animation: slideUpCover 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        pointer-events: all;
+    }
+
     @keyframes slideUpCover  { from { transform: translateY(100%); } to { transform: translateY(0%); } }
     @keyframes slideUpReveal { from { transform: translateY(0%); } to { transform: translateY(-100%); } }
 
-    .pt-fade-up { opacity: 0; transform: translateY(24px); animation: ptFadeUp 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+    /* Animasi fade-up konten halaman */
+    .pt-fade-up {
+        opacity: 0;
+        transform: translateY(15px);
+        animation: ptFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
     @keyframes ptFadeUp { to { opacity: 1; transform: translateY(0); } }
-    .pt-delay-1 { animation-delay: .05s; }
-    .pt-delay-2 { animation-delay: .12s; }
-    .pt-delay-3 { animation-delay: .2s; }
-    .pt-delay-4 { animation-delay: .28s; }
+
+    .pt-delay-1 { animation-delay: .04s; }
+    .pt-delay-2 { animation-delay: .08s; }
+    .pt-delay-3 { animation-delay: .12s; }
+    .pt-delay-4 { animation-delay: .16s; }
 </style>
 
 <script>
 (function () {
     var overlay = document.getElementById('page-transition-overlay');
+
+    // Saat halaman selesai dimuat, buka tirai hitam dengan mulus
     overlay.classList.add('enter');
     overlay.addEventListener('animationend', function () {
         overlay.classList.remove('enter');
         overlay.style.transform = 'translateY(100%)';
     }, { once: true });
 
+    // Efek ketika klik menu / link perpindahan halaman
     document.addEventListener('click', function (e) {
         var link = e.target.closest('a');
         if (!link) return;
-        if (link.target === '_blank') return;
-        if (link.hasAttribute('download')) return;
+        if (link.target === '_blank' || link.hasAttribute('download')) return;
+
         var href = link.getAttribute('href');
         if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
         if (link.origin && link.origin !== window.location.origin) return;
@@ -305,16 +339,18 @@
         e.preventDefault();
         overlay.style.transform = 'translateY(100%)';
         overlay.classList.add('leave');
-        setTimeout(function () { window.location.href = href; }, 380);
+        setTimeout(function () { window.location.href = href; }, 320); // Disesuaikan dengan durasi CSS baru
     });
 
+    // PENTING: Untuk submit form (seperti tambah barang), biarkan berjalan default
+    // agar sinkronisasi data ke database tidak memicu interupsi visual patah-patah
     document.addEventListener('submit', function (e) {
         var form = e.target;
         if (form.hasAttribute('data-no-transition')) return;
-        e.preventDefault();
+
+        // Cukup panggil overlay penutup tanpa me-prevent default yang merusak siklus request Laravel
         overlay.style.transform = 'translateY(100%)';
         overlay.classList.add('leave');
-        setTimeout(function () { form.submit(); }, 380);
     });
 })();
 </script>

@@ -52,7 +52,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Kondisi Alat <span class="text-required">*</span></label>
-                            <select name="kondisi_id" class="form-select" required>
+                            <select name="id_kondisi_barang" class="form-select" required>
                                 <option value="" selected disabled>-- Pilih Kondisi --</option>
                                 <option value="1">Baik</option>
                                 <option value="2">Rusak Ringan</option>
@@ -83,6 +83,24 @@
 </div>
 
 <style>
+    /* --- OPTIMASI ANIMASI SMOOTH (Ganti bagian .pt-fade-up lu dengan ini) --- */
+    .pt-fade-up {
+        opacity: 0;
+        transform: translateY(20px);
+        will-change: opacity, transform;
+        /* Kita pake cubic-bezier biar akselerasi animasinya kerasa premium dan smooth */
+        animation: fadeUpSmooth 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation-delay: 0.1s;
+    }
+
+    @keyframes fadeUpSmooth {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* ----------------------------------------------------------------------- */
+
     .section-heading {
         font-size: 14px; font-weight: 800; color: #1A1A1A;
         text-transform: uppercase; letter-spacing: .3px;
@@ -128,7 +146,5 @@
         text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
     }
     .btn-light-mono:hover { color: #1A1A1A; transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #1A1A1A; }
-
-    .pt-fade-up { will-change: opacity, transform; animation-delay: .15s; }
 </style>
 @endsection
