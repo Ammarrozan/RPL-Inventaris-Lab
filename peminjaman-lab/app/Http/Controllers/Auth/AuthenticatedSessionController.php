@@ -28,13 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $role = auth()->user()->role?->nama;
+        $role = strtolower(auth()->user()->role?->nama ?? '');
 
         if ($role === 'mahasiswa'){
             return redirect()->intended(route('mahasiswa.dashboard'));
+        }elseif ($role === 'aslab' || $role === 'kalab') {
+            return redirect()->route('barang.index');
         }
 
-        return redirect()->intended(route('barang.index'));
+        return redirect('/');
     }
 
     /**

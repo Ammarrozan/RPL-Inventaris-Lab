@@ -50,6 +50,7 @@ class RegisteredUserController extends Controller
                 'id_role'  => $request->id_role,
 
         ]);
+        return redirect()->route('login')->with('success', 'Akun Mahasiswa berhasil dibuat! Silakan login.');
 
         event(new Registered($user));
 

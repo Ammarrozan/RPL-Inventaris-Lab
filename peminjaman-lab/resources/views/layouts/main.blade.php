@@ -3,45 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peminjaman Lab</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+    <title>Inventaris Lab</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        :root {
-            --sidebar-w: 220px;
-            --navy: #0F172A;
-            --navy-2: #1E293B;
-            --navy-3: #293548;
-            --accent: #3B82F6;
-            --accent-2: #60A5FA;
-            --accent-glow: rgba(59,130,246,.18);
-            --text-1: #F1F5F9;
-            --text-2: #94A3B8;
-            --text-3: #64748B;
-            --surface: #FFFFFF;
-            --bg: #F0F4FA;
-            --border: #E2E8F0;
-            --green: #10B981;
-            --amber: #F59E0B;
-            --red: #EF4444;
-            --radius: 12px;
-            --radius-sm: 8px;
-            --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-            --shadow-md: 0 4px 16px rgba(0,0,0,.08);
-        }
+        @keyframes popIn  { 0% { transform: scale(0) rotate(-6deg); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        :root { --sidebar-w: 210px; }
 
         body {
-            font-family: 'Sora', sans-serif;
-            background: var(--bg);
-            color: #1E293B;
+            font-family: 'Segoe UI', sans-serif;
+            background: #FAFAF7;
+            color: #1A1A1A;
             min-height: 100vh;
-            display: flex;
         }
 
         /* ── Sidebar ── */
@@ -49,297 +26,236 @@
             width: var(--sidebar-w);
             min-width: var(--sidebar-w);
             min-height: 100vh;
-            background: var(--navy);
+            background: #1A1A1A;
             display: flex;
             flex-direction: column;
             position: fixed;
             top: 0; left: 0;
             z-index: 100;
-            overflow: hidden;
         }
 
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-            background-size: 24px 24px;
-            pointer-events: none;
-        }
-
-        .sidebar-brand {
-            padding: 22px 20px 18px;
-            border-bottom: 1px solid rgba(255,255,255,.06);
+        .sidebar-brand { padding: 20px 18px; border-bottom: 2px solid #333; }
+        .sidebar-brand-icon {
+            width: 30px; height: 30px;
+            background: #FFE34D; border: 2px solid #1A1A1A;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
             margin-bottom: 8px;
-            position: relative;
         }
-        .sidebar-brand-dot {
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: var(--accent);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 10px;
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-        .sidebar-brand-dot i { color: white; font-size: 14px; }
-        .sidebar-brand-name {
-            font-size: 13px; font-weight: 600;
-            color: var(--text-1);
-            letter-spacing: .01em;
-        }
-        .sidebar-brand-sub {
-            font-size: 10px; font-weight: 400;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            margin-top: 2px;
-        }
+        .sidebar-brand-icon i { font-size: 14px; color: #1A1A1A; }
+        .sidebar-brand-name { color: #fff; font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: -.3px; }
+        .sidebar-brand-sub { color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
-        .sidebar-section {
-            padding: 0 12px;
-            margin-bottom: 4px;
-        }
-        .sidebar-label {
-            font-size: 9px; font-weight: 600;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: .1em;
-            padding: 12px 8px 6px;
-        }
+        .sidebar-label { color: #777; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 16px 18px 8px; }
 
-        .nav-item {
-            display: flex; align-items: center; gap: 9px;
-            padding: 9px 10px;
-            border-radius: var(--radius-sm);
-            color: var(--text-2);
-            text-decoration: none;
-            font-size: 13px; font-weight: 500;
-            transition: background .15s, color .15s;
-            position: relative;
-            margin-bottom: 1px;
-        }
-        .nav-item i {
-            width: 18px; text-align: center;
-            font-size: 15px; flex-shrink: 0;
-        }
-        .nav-item:hover {
-            background: rgba(255,255,255,.06);
-            color: var(--text-1);
-        }
-        .nav-item.active {
-            background: var(--accent-glow);
-            color: var(--accent-2);
-        }
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 6px; bottom: 6px;
-            width: 3px; border-radius: 99px;
-            background: var(--accent);
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 16px 12px;
-            border-top: 1px solid rgba(255,255,255,.06);
-        }
-        .sidebar-user {
+        .sidebar-profile {
             display: flex; align-items: center; gap: 10px;
-            padding: 8px;
-            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            border-bottom: 2px solid #333;
         }
-        .user-avatar {
-            width: 30px; height: 30px; border-radius: 8px;
-            background: var(--accent);
+        .sb-avatar {
+            width: 34px; height: 34px; border-radius: 6px;
+            background: #FFE34D; border: 2px solid #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 600; color: white;
+            font-weight: 900; color: #1A1A1A; font-size: 13px;
             flex-shrink: 0;
         }
-        .user-name { font-size: 12px; font-weight: 500; color: var(--text-1); }
-        .user-role { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+        .sb-uname { color: #fff; font-weight: 800; font-size: 12px; }
+        .sb-urole { color: #888; font-size: 10px; }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; margin: 0 10px 4px;
+            border-radius: 6px;
+            color: #ccc; text-decoration: none;
+            font-size: 13px; font-weight: 700;
+            transition: background .15s, color .15s;
+        }
+        .nav-item i { font-size: 15px; width: 18px; text-align: center; }
+        .nav-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+        .nav-item.active { background: #FFE34D; color: #1A1A1A; }
+
+        .sidebar-footer {
+            margin-top: auto; padding: 14px 18px;
+            border-top: 2px solid #333;
+        }
+        .sidebar-logout-btn {
+            width: 100%;
+            background: transparent; border: none;
+            color: #FF9D9D; font-family: inherit;
+            font-size: 13px; font-weight: 700;
+            padding: 10px 12px; border-radius: 6px;
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; transition: background .15s;
+        }
+        .sidebar-logout-btn i { font-size: 16px; width: 18px; text-align: center; }
+        .sidebar-logout-btn:hover { background: rgba(255,77,77,.15); }
 
         /* ── Main ── */
         .main-wrap { margin-left: var(--sidebar-w); flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* topbar */
         .topbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            height: 52px;
+            background: #fff;
+            border-bottom: 3px solid #1A1A1A;
+            height: 56px;
             padding: 0 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 50;
         }
-        .topbar-left {
-            font-size: 13px; color: var(--text-3);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .topbar-left i { font-size: 12px; }
-        .topbar-right { display: flex; align-items: center; gap: 10px; }
-        .topbar-username {
-            font-size: 13px; font-weight: 500; color: #1E293B;
-        }
+        .topbar-left { font-size: 12px; color: #666; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .tb-dot { width: 7px; height: 7px; border-radius: 50%; background: #7CD9C2; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .topbar-username { font-size: 13px; font-weight: 700; color: #1A1A1A; }
         .btn-logout {
-            font-family: 'Sora', sans-serif;
-            font-size: 12px; font-weight: 500;
-            color: var(--red); background: transparent;
-            border: 1px solid #FECACA; border-radius: var(--radius-sm);
-            padding: 5px 12px; cursor: pointer;
+            font-family: inherit; font-size: 11px; font-weight: 800;
+            color: #FF4D4D; background: #fff;
+            border: 2px solid #1A1A1A; border-radius: 6px;
+            padding: 6px 14px; cursor: pointer;
+            box-shadow: 3px 3px 0 #1A1A1A;
             display: flex; align-items: center; gap: 5px;
-            transition: background .15s;
+            transition: transform .1s, box-shadow .1s;
         }
-        .btn-logout:hover { background: #FEF2F2; }
+        .btn-logout:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #1A1A1A; }
 
-        /* content pembungkus ditingkatkan jadi container-fluid */
-        .main-content { padding: 28px; flex: 1; }
+        .main-content { padding: 24px 28px; flex: 1; min-width: 0; }
 
-        /* ── Alert ── */
         .alert-success-custom {
-            background: #F0FDF4; color: #15803D;
-            border: 1px solid #BBF7D0; border-radius: var(--radius);
-            padding: 11px 16px; font-size: 13px; font-weight: 500;
+            background: #7CD9C2; border: 3px solid #1A1A1A; border-radius: 8px;
+            padding: 11px 16px; font-size: 13px; font-weight: 700;
             display: flex; align-items: center; gap: 8px;
             margin-bottom: 20px;
+            box-shadow: 4px 4px 0 #1A1A1A;
         }
 
-        /* ── Override Bootstrap table ── */
-        .table { font-size: 13px; font-family: 'Sora', sans-serif; }
-        .table thead th {
-            font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: .05em;
-            color: #64748B; background: #F8FAFC !important;
-            border-bottom: 1px solid var(--border) !important;
-            border-top: none; padding: 10px 14px;
+        .alert-error-custom {
+            background: #FF9D9D; border: 3px solid #1A1A1A; border-radius: 8px;
+            padding: 11px 16px; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0 #1A1A1A;
         }
-        .table tbody td {
-            padding: 11px 14px; vertical-align: middle;
-            border-color: var(--border); color: #334155;
-            font-size: 13px;
-        }
-        .table tbody tr:hover td { background: #F8FAFC; }
-        .table-bordered { border: 1px solid var(--border) !important; border-radius: var(--radius); overflow: hidden; }
-        .table-bordered td, .table-bordered th { border-color: var(--border) !important; }
-
-        /* ── Buttons override ── */
-        .btn { font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm); }
-        .btn-primary { background: var(--accent); border-color: var(--accent); }
-        .btn-primary:hover { background: #2563EB; border-color: #2563EB; }
-        .btn-sm { padding: 4px 10px; font-size: 11px; }
 
         /* ── Page header ── */
-        .page-title {
-            font-size: 18px; font-weight: 600; color: #0F172A;
-            margin-bottom: 4px;
-        }
-        .page-subtitle { font-size: 13px; color: var(--text-3); margin-bottom: 20px; }
+        .page-title { font-size: 22px; font-weight: 900; color: #1A1A1A; text-transform: uppercase; letter-spacing: -.5px; }
+        .page-subtitle { font-size: 12px; color: #666; font-weight: 600; margin-top: 2px; }
 
-        /* ── Form controls override ── */
+        /* ── Stats card ── */
+        .stat-card {
+            background: #fff; border: 3px solid #1A1A1A; border-radius: 8px;
+            box-shadow: 4px 4px 0 #1A1A1A;
+            padding: 16px 18px;
+            display: flex; align-items: center; gap: 12px;
+            animation: popIn .4s ease both;
+        }
+        .stat-icon {
+            width: 38px; height: 38px;
+            border: 2px solid #1A1A1A; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .stat-num { font-size: 22px; font-weight: 900; color: #1A1A1A; line-height: 1; }
+        .stat-label { font-size: 10px; color: #666; font-weight: 700; margin-top: 2px; }
+
+        /* ── Bootstrap overrides ── */
+        .table { font-size: 12px; font-family: inherit; }
+        .table thead th {
+            background: #1A1A1A !important; color: #FFE34D !important;
+            font-size: 10px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: .5px;
+            padding: 11px 14px; border: none !important;
+        }
+        .table tbody td { padding: 11px 14px; vertical-align: middle; border-bottom: 2px solid #F0EFEA; color: #333; font-weight: 600; border-top: none !important; }
+        .table-bordered { border: 3px solid #1A1A1A !important; border-radius: 8px; overflow: hidden; box-shadow: 5px 5px 0 #1A1A1A; }
+        .table-bordered td, .table-bordered th { border-color: #F0EFEA !important; }
+
+        .btn { font-family: inherit; font-size: 11px; font-weight: 800; border-radius: 6px; text-transform: uppercase; }
+        .btn-primary { background: #1A1A1A; color: #FFE34D !important; border: 3px solid #1A1A1A; box-shadow: 4px 4px 0 #FF4D4D; }
+        .btn-primary:hover { background: #1A1A1A; transform: translate(-1px,-1px); box-shadow: 5px 5px 0 #FF4D4D; }
+        .btn-warning { background: #FFE34D; color: #1A1A1A !important; border: 2px solid #1A1A1A; box-shadow: 2px 2px 0 #1A1A1A; }
+        .btn-danger { background: #FF9D9D; color: #1A1A1A !important; border: 2px solid #1A1A1A; box-shadow: 2px 2px 0 #1A1A1A; }
+        .btn-success { background: #A8F0A8; color: #1A1A1A !important; border: 2px solid #1A1A1A; box-shadow: 2px 2px 0 #1A1A1A; }
+        .btn-info { background: #9DC8FF; color: #1A1A1A !important; border: 2px solid #1A1A1A; box-shadow: 2px 2px 0 #1A1A1A; }
+        .btn-sm { padding: 4px 10px; font-size: 10px; }
+
         .form-control, .form-select {
-            font-family: 'Sora', sans-serif;
-            font-size: 13px;
-            border-color: var(--border);
-            border-radius: var(--radius-sm);
-            padding: 8px 12px;
+            font-family: inherit; font-size: 13px;
+            border: 3px solid #1A1A1A; border-radius: 6px;
+            padding: 9px 12px;
         }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        .form-label { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 5px; }
+        .form-control:focus, .form-select:focus { border-color: #1A1A1A; box-shadow: 3px 3px 0 #1A1A1A; }
+        .form-label { font-size: 11px; font-weight: 800; color: #1A1A1A; text-transform: uppercase; margin-bottom: 5px; }
 
-        /* card */
-        .card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
+        .card { border: 3px solid #1A1A1A; border-radius: 8px; box-shadow: 5px 5px 0 #1A1A1A; }
         .card-body { padding: 20px; }
     </style>
 </head>
-<body>
+<body class="d-flex">
 
 {{-- ── Sidebar ── --}}
 <aside class="sidebar">
     <div class="sidebar-brand">
-        <div class="sidebar-brand-dot"><i class="bi bi-boxes"></i></div>
-        <div class="sidebar-brand-name">Inventaris Lab</div>
-        <div class="sidebar-brand-sub">Management System</div>
+
+        <div class="sidebar-brand-name"></div>
+        <div class="sidebar-brand-sub"></div>
     </div>
 
-    <div class="sidebar-section">
-        <div class="sidebar-label">Menu</div>
+    @php $role = auth()->user()->role?->nama; @endphp
 
-        @php $role = auth()->user()->role?->nama; @endphp
+    <div class="sidebar-profile">
+        <div class="sb-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
+        <div>
+            <div class="sb-uname">{{ auth()->user()->name }}</div>
+            <div class="sb-urole">{{ ucfirst($role ?? 'User') }}</div>
+        </div>
+    </div>
 
-        @if($role === 'mahasiswa')
-            <a href="{{ route('mahasiswa.dashboard') }}"
-               class="nav-item {{ request()->is('mahasiswa/dashboard') ? 'active' : '' }}">
-                <i class="bi bi-grid"></i> Dashboard
-            </a>
-            <a href="{{ route('mahasiswa.barang') }}"
-               class="nav-item {{ request()->is('mahasiswa/barang') ? 'active' : '' }}">
-                <i class="bi bi-archive"></i> Pinjam Barang
-            </a>
-            <a href="{{ route('mahasiswa.riwayat') }}"
-               class="nav-item {{ request()->is('mahasiswa/riwayat') ? 'active' : '' }}">
-                <i class="bi bi-clock-history"></i> Riwayat
-            </a>
-        @else
-            <a href="{{ route('barang.index') }}"
-               class="nav-item {{ request()->is('barang*') ? 'active' : '' }}">
-                <i class="bi bi-box-seam"></i> Barang
-            </a>
-            <a href="{{ route('transaksi.index') }}"
-               class="nav-item {{ request()->is('transaksi*') ? 'active' : '' }}">
-                <i class="bi bi-arrow-left-right"></i> Transaksi
-            </a>
-            @if($role === 'kalab')
-                <a href="{{ route('users.index') }}"
-                   class="nav-item {{ request()->is('users*') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i> Pengguna
-                </a>
-            @endif
+    <div class="sidebar-label">Menu</div>
+
+    @if(strtolower($role ?? '') === 'mahasiswa')
+        <a href="{{ route('mahasiswa.dashboard') }}" class="nav-item {{ request()->is('mahasiswa/dashboard') ? 'active' : '' }}"><i class="bi bi-grid"></i> Dashboard</a>
+        <a href="{{ route('mahasiswa.barang') }}" class="nav-item {{ request()->is('mahasiswa/barang') ? 'active' : '' }}"><i class="bi bi-archive"></i> Pinjam Barang</a>
+        <a href="{{ route('mahasiswa.riwayat') }}" class="nav-item {{ request()->is('mahasiswa/riwayat') ? 'active' : '' }}"><i class="bi bi-clock-history"></i> Riwayat</a>
+    @else
+        <a href="{{ route('barang.index') }}" class="nav-item {{ request()->is('barang*') ? 'active' : '' }}"><i class="bi bi-box-seam"></i> Barang</a>
+        <a href="{{ route('transaksi.index') }}" class="nav-item {{ request()->is('transaksi*') ? 'active' : '' }}"><i class="bi bi-arrow-left-right"></i> Transaksi</a>
+        @if(strtolower($role ?? '') === 'kalab')
+            <a href="{{ route('users.index') }}" class="nav-item {{ request()->is('users*') ? 'active' : '' }}"><i class="bi bi-people"></i> Pengguna</a>
         @endif
-    </div>
+    @endif
 
     <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</div>
-            <div>
-                <div class="user-name">{{ auth()->user()->name }}</div>
-                <div class="user-role">{{ ucfirst($role ?? 'User') }}</div>
-            </div>
-        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="sidebar-logout-btn">
+                <i class="bi bi-box-arrow-right"></i> <span>Log Out</span>
+            </button>
+        </form>
     </div>
 </aside>
 
 {{-- ── Main ── --}}
 <div class="main-wrap">
     <header class="topbar">
-        <div class="topbar-left">
-            <i class="bi bi-circle-fill" style="color:#10B981;font-size:7px"></i>
-            System Online
-        </div>
+        <div class="topbar-left"><div class="tb-dot"></div> System Online</div>
         <div class="topbar-right">
-            <span class="topbar-username">{{ auth()->user()->name }}</span>
+            
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
+
             </form>
         </div>
     </header>
 
-    <div class="main-content container-fluid">
+    <div class="main-content">
         @if(session('success'))
             <div class="alert-success-custom">
-                <i class="bi bi-check-circle-fill"></i>
-                {{ session('success') }}
+                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert-error-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i> {{ session('error') }}
             </div>
         @endif
 
@@ -348,5 +264,61 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div id="page-transition-overlay"></div>
+
+<style>
+    #page-transition-overlay {
+        position: fixed; inset: 0; background: #1A1A1A; z-index: 9999;
+        transform: translateY(100%); pointer-events: none;
+    }
+    #page-transition-overlay.enter { animation: slideUpReveal 0.5s cubic-bezier(.65,0,.35,1) forwards; }
+    #page-transition-overlay.leave { animation: slideUpCover 0.4s cubic-bezier(.65,0,.35,1) forwards; pointer-events: all; }
+    @keyframes slideUpCover  { from { transform: translateY(100%); } to { transform: translateY(0%); } }
+    @keyframes slideUpReveal { from { transform: translateY(0%); } to { transform: translateY(-100%); } }
+
+    .pt-fade-up { opacity: 0; transform: translateY(24px); animation: ptFadeUp 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+    @keyframes ptFadeUp { to { opacity: 1; transform: translateY(0); } }
+    .pt-delay-1 { animation-delay: .05s; }
+    .pt-delay-2 { animation-delay: .12s; }
+    .pt-delay-3 { animation-delay: .2s; }
+    .pt-delay-4 { animation-delay: .28s; }
+</style>
+
+<script>
+(function () {
+    var overlay = document.getElementById('page-transition-overlay');
+    overlay.classList.add('enter');
+    overlay.addEventListener('animationend', function () {
+        overlay.classList.remove('enter');
+        overlay.style.transform = 'translateY(100%)';
+    }, { once: true });
+
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a');
+        if (!link) return;
+        if (link.target === '_blank') return;
+        if (link.hasAttribute('download')) return;
+        var href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+        if (link.origin && link.origin !== window.location.origin) return;
+
+        e.preventDefault();
+        overlay.style.transform = 'translateY(100%)';
+        overlay.classList.add('leave');
+        setTimeout(function () { window.location.href = href; }, 380);
+    });
+
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        if (form.hasAttribute('data-no-transition')) return;
+        e.preventDefault();
+        overlay.style.transform = 'translateY(100%)';
+        overlay.classList.add('leave');
+        setTimeout(function () { form.submit(); }, 380);
+    });
+})();
+</script>
+
+
 </body>
 </html>

@@ -1,83 +1,141 @@
 @extends('mahasiswa.layout')
 
 @section('content')
+<style>
+    @keyframes wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(18deg); } 75% { transform: rotate(-12deg); } }
+    .wave-emoji { display: inline-block; animation: wave 1.8s ease-in-out infinite; transform-origin: 70% 70%; }
 
-@php
-    $user = auth()->user();
-    $peminjam = \App\Models\Peminjam::where('id_user', $user->id)->first();
-    $totalPeminjaman = $peminjam ? \App\Models\Transaksi::where('id_peminjam', $peminjam->id)->count() : 0;
-    $sedangDipinjam = $peminjam ? \App\Models\Transaksi::where('id_peminjam', $peminjam->id)->whereHas('status', fn($q) => $q->where('nama', 'Dipinjam'))->count() : 0;
-    $menunggu = $peminjam ? \App\Models\Transaksi::where('id_peminjam', $peminjam->id)->whereHas('status', fn($q) => $q->where('nama', 'Menunggu Approval'))->count() : 0;
-    $selesai = $peminjam ? \App\Models\Transaksi::where('id_peminjam', $peminjam->id)->whereHas('status', fn($q) => $q->where('nama', 'Selesai'))->count() : 0;
-@endphp
+    .action-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .action-card:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: 8px 8px 0 #1A1A1A !important;
+        cursor: pointer;
+    }
 
-<!-- Sambutan -->
-<div style="background: linear-gradient(135deg, #0d6efd, #0056b3); border-radius: 16px; padding: 28px 32px; color: white; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center;">
-    <div>
-        <h4 style="font-weight: 700; margin-bottom: 4px;">Halo, {{ $user->name }}! 👋</h4>
-        <p style="opacity: 0.85; margin: 0; font-size: 14px;">Selamat datang di Portal Mahasiswa Peminjaman Lab</p>
+    .stat-card { transition: transform .15s ease; }
+    .stat-card:hover { transform: translateY(-3px); }
+
+    /* Override timing pt-fade-up khusus halaman ini biar lebih smooth */
+    .pt-fade-up {
+        will-change: opacity, transform;
+        animation-delay: .15s;
+    }
+    .pt-delay-1 { animation-delay: .2s; }
+    .pt-delay-2 { animation-delay: .26s; }
+    .pt-delay-3 { animation-delay: .32s; }
+    .pt-delay-4 { animation-delay: .38s; }
+</style>
+
+{{-- Hero banner --}}
+<div class="card glass-card border-0 mb-4 pt-fade-up">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold mb-2" style="color:#1A1A1A;text-transform:uppercase;letter-spacing:-.5px">
+                Halo, {{ auth()->user()->name ?? 'Mahasiswa' }}! <span class="wave-emoji">👋</span>
+            </h3>
+            <p class="mb-0" style="color:#666;font-weight:500;font-size:13px">Selamat datang di Portal Mahasiswa Peminjaman Lab</p>
+        </div>
+        <div style="width:50px;height:50px;background:#FFE34D;border:3px solid #1A1A1A;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px">
+            🎓
+        </div>
     </div>
-    <div style="font-size: 48px;">🎓</div>
 </div>
 
-<!-- Kartu Statistik -->
+{{-- Stats --}}
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid #0d6efd;">
-            <div style="font-size: 28px; font-weight: 700; color: #0d6efd;">{{ $totalPeminjaman }}</div>
-            <div style="font-size: 13px; color: #6c757d; margin-top: 4px;">Total Peminjaman</div>
-            <div style="font-size: 24px; margin-top: 8px;">📋</div>
+    <div class="col-md-3 pt-fade-up pt-delay-1">
+        <div class="card glass-card border-0 h-100 stat-card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color:#1A1A1A">{{ $totalPeminjaman ?? 1 }}</h3>
+                    <span class="small" style="color:#666;font-weight:600">Total Peminjaman</span>
+                </div>
+                <div style="width:38px;height:38px;border:2px solid #1A1A1A;border-radius:6px;background:#7CD9C2;display:flex;align-items:center;justify-content:center">
+                    <i class="bi bi-collection" style="font-size:16px"></i>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid #ffc107;">
-            <div style="font-size: 28px; font-weight: 700; color: #ffc107;">{{ $menunggu }}</div>
-            <div style="font-size: 13px; color: #6c757d; margin-top: 4px;">Menunggu Approval</div>
-            <div style="font-size: 24px; margin-top: 8px;">⏳</div>
+
+    <div class="col-md-3 pt-fade-up pt-delay-2">
+        <div class="card glass-card border-0 h-100 stat-card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color:#1A1A1A">{{ $menungguApproval ?? 0 }}</h3>
+                    <span class="small" style="color:#666;font-weight:600">Menunggu Approval</span>
+                </div>
+                <div style="width:38px;height:38px;border:2px solid #1A1A1A;border-radius:6px;background:#FFE34D;display:flex;align-items:center;justify-content:center">
+                    <i class="bi bi-hourglass-split" style="font-size:16px"></i>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid #0dcaf0;">
-            <div style="font-size: 28px; font-weight: 700; color: #0dcaf0;">{{ $sedangDipinjam }}</div>
-            <div style="font-size: 13px; color: #6c757d; margin-top: 4px;">Sedang Dipinjam</div>
-            <div style="font-size: 24px; margin-top: 8px;">🔬</div>
+
+    <div class="col-md-3 pt-fade-up pt-delay-3">
+        <div class="card glass-card border-0 h-100 stat-card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color:#1A1A1A">{{ $sedangDipinjam ?? 0 }}</h3>
+                    <span class="small" style="color:#666;font-weight:600">Sedang Dipinjam</span>
+                </div>
+                <div style="width:38px;height:38px;border:2px solid #1A1A1A;border-radius:6px;background:#9DC8FF;display:flex;align-items:center;justify-content:center">
+                    <i class="bi bi-box-seam" style="font-size:16px"></i>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-left: 4px solid #198754;">
-            <div style="font-size: 28px; font-weight: 700; color: #198754;">{{ $selesai }}</div>
-            <div style="font-size: 13px; color: #6c757d; margin-top: 4px;">Selesai</div>
-            <div style="font-size: 24px; margin-top: 8px;">✅</div>
+
+    <div class="col-md-3 pt-fade-up pt-delay-4">
+        <div class="card glass-card border-0 h-100 stat-card">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color:#1A1A1A">{{ $selesai ?? 1 }}</h3>
+                    <span class="small" style="color:#666;font-weight:600">Selesai</span>
+                </div>
+                <div style="width:38px;height:38px;border:2px solid #1A1A1A;border-radius:6px;background:#A8F0A8;display:flex;align-items:center;justify-content:center">
+                    <i class="bi bi-check-circle" style="font-size:16px"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Shortcut Menu -->
+{{-- Action cards --}}
 <div class="row g-3">
     <div class="col-md-6">
-        <a href="{{ route('mahasiswa.barang') }}" style="text-decoration: none;">
-            <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
-                <div style="background: #e8f0fe; border-radius: 12px; padding: 14px; font-size: 28px;">🔭</div>
-                <div>
-                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Mulai Pinjam Alat</div>
-                    <div style="font-size: 13px; color: #6c757d; margin-top: 2px;">Lihat dan request Alat tersedia</div>
+        <a href="{{ route('mahasiswa.barang') ?? '#' }}" class="text-decoration-none">
+            <div class="card glass-card border-0 h-100 action-card">
+                <div class="card-body p-4 d-flex align-items-center">
+                    <div style="width:46px;height:46px;border:3px solid #1A1A1A;border-radius:8px;background:#9DC8FF;display:flex;align-items:center;justify-content:center;flex-shrink:0" class="me-3">
+                        <i class="bi bi-cart-plus" style="font-size:20px;color:#1A1A1A"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1" style="color:#1A1A1A;text-transform:uppercase;font-size:14px">Mulai Pinjam Alat</h5>
+                        <span class="small" style="color:#666;font-weight:500">Lihat dan request alat lab yang tersedia</span>
+                    </div>
+                    <div style="font-size:18px;color:#1A1A1A;font-weight:900">→</div>
                 </div>
-                <div style="margin-left: auto; color: #0d6efd; font-size: 20px;">→</div>
             </div>
         </a>
     </div>
+
     <div class="col-md-6">
-        <a href="{{ route('mahasiswa.riwayat') }}" style="text-decoration: none;">
-            <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.08)'">
-                <div style="background: #e8f0fe; border-radius: 12px; padding: 14px; font-size: 28px;">📋</div>
-                <div>
-                    <div style="font-weight: 700; color: #1e3a5f; font-size: 15px;">Cek Status Peminjaman</div>
-                    <div style="font-size: 13px; color: #6c757d; margin-top: 2px;">Lihat status peminjaman kamu</div>
+        <a href="{{ route('mahasiswa.riwayat') ?? '#' }}" class="text-decoration-none">
+            <div class="card glass-card border-0 h-100 action-card">
+                <div class="card-body p-4 d-flex align-items-center">
+                    <div style="width:46px;height:46px;border:3px solid #1A1A1A;border-radius:8px;background:#7CD9C2;display:flex;align-items:center;justify-content:center;flex-shrink:0" class="me-3">
+                        <i class="bi bi-file-earmark-text" style="font-size:20px;color:#1A1A1A"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1" style="color:#1A1A1A;text-transform:uppercase;font-size:14px">Cek Status Peminjaman</h5>
+                        <span class="small" style="color:#666;font-weight:500">Pantau status approval & pengembalian</span>
+                    </div>
+                    <div style="font-size:18px;color:#1A1A1A;font-weight:900">→</div>
                 </div>
-                <div style="margin-left: auto; color: #0d6efd; font-size: 20px;">→</div>
             </div>
         </a>
     </div>
 </div>
-
 @endsection
