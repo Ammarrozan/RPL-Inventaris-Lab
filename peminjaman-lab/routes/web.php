@@ -8,6 +8,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
+
 Route::get('/', function () {
     if (auth()->check()) {
         $role = auth()->user()->role?->nama;
@@ -24,8 +25,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rute untuk pendaftaran mahasiswa (diakses tanpa login)
-    Route::get('/register-mahasiswa', [AuthController::class, 'register'])->name('register');
-    Route::post('/register-mahasiswa', [AuthController::class, 'storeRegister'])->name('register.store');
+Route::get('/register-mahasiswa', [AuthController::class, 'register'])->name('register');
+Route::post('/register-mahasiswa', [AuthController::class, 'storeRegister'])->name('register.store');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -40,6 +42,9 @@ Route::middleware('auth')->group(function () {
 
     // Aslab & Kalab bisa akses barang & peminjam
     Route::middleware('role:aslab,kalab')->group(function () {
+        // ── RUTENYA DITARUH DI SINI ──
+        Route::post('/barang/cetak-barcode', [BarangController::class, 'cetakBarcode'])->name('barang.cetak-barcode');
+
         Route::resource('barang', BarangController::class);
         Route::resource('peminjam', PeminjamController::class);
     });
