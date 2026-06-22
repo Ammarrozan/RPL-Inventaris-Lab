@@ -49,10 +49,9 @@ public function create()
     // 4. Ambil jumlah stok yang mau diinput oleh aslab
     $jumlahInput = $request->stok_total;
 
-    // 5. LOOPING: Simpan ke database satu per satu unit barang
+    
     for ($i = 1; $i <= $jumlahInput; $i++) {
-        $nextNumber = $lastNumber + $i; // Menghitung nomor urut selanjutnya
-
+        $nextNumber = $lastNumber + $i; //
         // Gabungkan kembali menjadi format kode otomatis (Contoh: RO-001)
         $kodeOtomatis = $prefix . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
