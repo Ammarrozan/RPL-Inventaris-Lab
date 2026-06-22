@@ -17,36 +17,53 @@ class BarangController extends Controller
         return view('barang.create', compact('kondisis'));
     }
     public function store(Request $request)
-    {
-        // PERBAIKAN: Tambah validasi untuk id_kondisi_barang
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'stok_total' => 'required|integer|min:0',
-            'id_kondisi_barang' => 'required|exists:kondisi_barang,id',
-        ]);
-        $prefix = strtoupper(substr($request->nama, 0, 2));
-        $lastBarang = Barang::where('kode', 'like', $prefix . '-%')
-                            ->orderBy('id', 'desc')
-                            ->first();
-        if ($lastBarang) {
-            $lastNumber = (int) substr($lastBarang->kode, -3);
-            $newNumber = $lastNumber + 1;
-        } else {
-            $newNumber = 1;
-        }
-        $kodeBarangFinal = $prefix . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
-        Barang::create([
-            'kode'              => $kodeBarangFinal,
-            'nama'              => $request->nama,
-            'deskripsi'         => $request->deskripsi,
-            'stok_total'        => $request->stok_total,
-            'stok_tersedia'     => $request->stok_total,
-            'id_kondisi_barang' => $request->id_kondisi_barang, // PERBAIKAN: Disamakan namanya
-            'lokasi'            => $request->lokasi,
-            'created_by'        => auth()->id(),
-        ]);
-        return redirect()->route('barang.index')->with('success', 'Barang baru berhasil ditambahkan dengan kode ' . $kodeBarangFinal);
+{
+    // 1. Validasi inputan form
+    $request->validate([
+        'nama' => 'required|string',
+        'stok_total' => 'required|integer|min:1',
+        'id_kondisi_barang' => 'required',
+        'lokasi' => 'required',
+    ]);
+
+    // 2. Ambil 2 huruf pertama dari nama barang sebagai Prefix (Contoh: "Router" -> "RO")
+    $prefix = strtoupper(substr($request->nama, 0, 2)); // Menghasilkan "RO" atau "LA"
+
+    // 3. Cari kode terakhir di database yang mirip dengan prefix tersebut (Contoh: mencari "RO-")
+    $lastBarang = \App\Models\Barang::where('kode', 'LIKE', $prefix . '-%')
+                    ->orderBy('kode', 'desc')
+                    ->first();
+
+    $lastNumber = 0;
+    if ($lastBarang) {
+        // Jika ketemu "RO-010", ambil angkanya saja "010" lalu ubah jadi integer (10)
+        $lastNumber = (int) str_replace($prefix . '-', '', $lastBarang->kode);
     }
+
+    // 4. Ambil jumlah stok yang mau diinput oleh aslab
+    $jumlahInput = $request->stok_total;
+
+    // 5. LOOPING: Simpan ke database satu per satu unit barang
+    for ($i = 1; $i <= $jumlahInput; $i++) {
+        $nextNumber = $lastNumber + $i; // Menghitung nomor urut selanjutnya
+
+        // Gabungkan kembali menjadi format kode otomatis (Contoh: RO-001)
+        $kodeOtomatis = $prefix . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+        // Insert ke database per 1 unit barang
+        \App\Models\Barang::create([
+            'kode' => $kodeOtomatis,
+            'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+            'stok_total' => 1,       // Set 1 karena dilacak per biji
+            'stok_tersedia' => 1,    // Set 1 karena unit baru ini langsung tersedia
+            'id_kondisi_barang' => $request->id_kondisi_barang,
+            'lokasi' => $request->lokasi,
+        ]);
+    }
+
+    return redirect()->route('barang.index')->with('success', $jumlahInput . ' unit ' . $request->nama . ' berhasil didaftarkan otomatis!');
+}
     public function show(Barang $barang)
     {
         return view('barang.show', compact('barang'));
