@@ -7,16 +7,20 @@ class BarangController extends Controller
 {
     public function index()
 {
-    // PERBAIKAN: Tampilkan semua barang diurutkan berdasarkan KODE secara ascending (A-Z)
     $barangs = Barang::orderBy('kode', 'asc')->get();
+    $jenisBarang = Barang::distinct('nama')->count();
+    $totalStok = Barang::sum('stok_total');
+    $stokTersedia = Barang::sum('stok_tersedia');
 
-    // Hitung data untuk card-card di dashboard atas
-    $jenisBarang = Barang::distinct('nama')->count(); // Menghitung jenis barang yang unik (Router dihitung 1)
-    $totalStok = Barang::sum('stok_total');          // Menghitung total semua stok (10)
-    $stokTersedia = Barang::sum('stok_tersedia');    // Menghitung total stok yang tersedia (10)
-
-    // Lempar semua variabel ke view barang.index
     return view('barang.index', compact('barangs', 'jenisBarang', 'totalStok', 'stokTersedia'));
+}
+
+// ── PASTIKAN BLOK INI ADA DAN TIDAK TERHAPUS ──
+public function create()
+{
+    // Mengambil data kondisi barang untuk pilihan select-option di form
+    $kondisis = \App\Models\KondisiBarang::all();
+    return view('barang.create', compact('kondisis'));
 }
     public function store(Request $request)
 {
