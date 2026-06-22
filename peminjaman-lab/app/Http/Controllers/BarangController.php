@@ -6,16 +6,18 @@ use Illuminate\Http\Request;
 class BarangController extends Controller
 {
     public function index()
-    {
-        // PERBAIKAN: Tampilkan semua barang agar admin bisa lihat yang stoknya habis/0
-        $barangs = Barang::latest()->get();
-        return view('barang.index', compact('barangs'));
-    }
-    public function create()
-    {
-        $kondisis = KondisiBarang::all();
-        return view('barang.create', compact('kondisis'));
-    }
+{
+    // PERBAIKAN: Tampilkan semua barang diurutkan berdasarkan KODE secara ascending (A-Z)
+    $barangs = Barang::orderBy('kode', 'asc')->get();
+
+    // Hitung data untuk card-card di dashboard atas
+    $jenisBarang = Barang::distinct('nama')->count(); // Menghitung jenis barang yang unik (Router dihitung 1)
+    $totalStok = Barang::sum('stok_total');          // Menghitung total semua stok (10)
+    $stokTersedia = Barang::sum('stok_tersedia');    // Menghitung total stok yang tersedia (10)
+
+    // Lempar semua variabel ke view barang.index
+    return view('barang.index', compact('barangs', 'jenisBarang', 'totalStok', 'stokTersedia'));
+}
     public function store(Request $request)
 {
     // 1. Validasi inputan form

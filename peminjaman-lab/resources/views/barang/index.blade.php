@@ -17,7 +17,7 @@
         <div class="stat-card">
             <div class="stat-icon" style="background:#9DC8FF"><i class="bi bi-box"></i></div>
             <div>
-                <div class="stat-num">{{ $barangs->count() }}</div>
+                <div class="stat-num">{{ $jenisBarang }}</div>
                 <div class="stat-label">Jenis Barang</div>
             </div>
         </div>
@@ -26,7 +26,7 @@
         <div class="stat-card">
             <div class="stat-icon" style="background:#7CD9C2"><i class="bi bi-stack"></i></div>
             <div>
-                <div class="stat-num">{{ $barangs->sum('stok_total') }}</div>
+                <div class="stat-num">{{ $totalStok }}</div>
                 <div class="stat-label">Total Stok</div>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="stat-card">
             <div class="stat-icon" style="background:#A8F0A8"><i class="bi bi-check-circle"></i></div>
             <div>
-                <div class="stat-num">{{ $barangs->sum('stok_tersedia') }}</div>
+                <div class="stat-num">{{ $stokTersedia }}</div>
                 <div class="stat-label">Stok Tersedia</div>
             </div>
         </div>
