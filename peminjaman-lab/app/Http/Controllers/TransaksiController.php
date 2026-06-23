@@ -122,7 +122,14 @@ class TransaksiController extends Controller
         'id_status'            => $status->id,
         'tanggal_dikembalikan' => now()->toDateString(),
         'updated_by'           => auth()->user()?->id,
+
     ]);
+
+        $peminjam = $transaksi->peminjam;
+    if ($peminjam && $peminjam->barang) {
+        $peminjam->barang->increment('stok_tersedia', $peminjam->jumlah);
+    }
+
 
     return redirect()->route('transaksi.index')->with('success', 'Barang berhasil dikembalikan!');
 }
