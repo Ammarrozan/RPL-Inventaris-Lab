@@ -220,7 +220,7 @@
 
     <div class="sidebar" id="sidebar">
         <div>
-            <div class="sidebar-title">Portal Mhs</div>
+            <div class="sidebar-title">Portal Mahasiswa</div>
 
             <div class="profile-section">
                 <div class="profile-icon"><i class="bi bi-person-fill"></i></div>
