@@ -11,7 +11,7 @@
             <th>No</th>
             <th>Nama</th>
             <th>Email</th>
-            <th>No HP</th>
+            
             <th>Role</th>
             <th>Aksi</th>
         </tr>
@@ -22,7 +22,7 @@
             <td>{{ $index + 1 }}</td>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ $user->no_hp ?? '-' }}</td>
+
             <td>{{ $user->role->nama ?? '-' }}</td>
             <td>
                 <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
